@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="layout::head"></head>
+  <body>
+    <!-- 네브바 -->
+    <nav th:replace="layout::nav"></nav>
+    <div class="container my-3">
+      <h2>질문목록</h2>
+      <table class="table">
+        <thead class="table-dark">
+          <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성일시</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="question, loop : ${qList}">
+            <td th:text="${loop.count}"></td>
+            <td>
+              <a
+                th:href="@{/question/detail/__${question.id}__}"
+                th:text="${question.subject}"
+              ></a>
+            </td>
+            <td
+              th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"
+            ></td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- 질문 등록하기 -->
+      <a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
+    </div>
+  </body>
+</html>
