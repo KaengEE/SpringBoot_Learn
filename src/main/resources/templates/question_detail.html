@@ -61,6 +61,12 @@
           class="form-control"
         ></textarea>
         <input type="submit" value="답변등록" class="btn btn-primary my-2" />
+        <!-- 취소버튼 -->
+        <a
+          th:href="@{/question/list?page=__${paging.number}__}"
+          class="btn btn-danger my-2"
+          >취소</a
+        >
       </form>
     </div>
   </body>

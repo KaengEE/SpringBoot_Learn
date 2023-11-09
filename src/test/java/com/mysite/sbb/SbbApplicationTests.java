@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.mysite.sbb.answer.AnswerRepositoty;
 import com.mysite.sbb.question.QuestionRepository;
+import com.mysite.sbb.question.QuestionService;
 
 @SpringBootTest
 class SbbApplicationTests {
@@ -15,6 +16,9 @@ class SbbApplicationTests {
 	
 	@Autowired
 	private AnswerRepositoty aRepo;
+	
+	@Autowired
+	private QuestionService qService;
 	
 	@Test
 	void contextLoads() {
@@ -99,6 +103,12 @@ class SbbApplicationTests {
 		List<Answer> list = a.getQuestion().getAnswerList();
 		
 		*/	
+		
+		for (int i = 1 ; i <= 300; i++) {
+			String subject = String.format("테스트 데이터입니다:[%03d]", i);
+			String content = "내용무";
+			qService.create(subject, content);
+		}
 		
 	}
 
