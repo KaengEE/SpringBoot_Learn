@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import com.mysite.sbb.question.Question;
+import com.mysite.sbb.user.SiteUser;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,4 +32,10 @@ public class Answer {
 	//어떤질문에 대한 답변
 	@ManyToOne
 	private Question question;
+	
+	@ManyToOne
+	private SiteUser author; //작성자
+	
+	private LocalDateTime modifyDate; //수정날짜
+
 }

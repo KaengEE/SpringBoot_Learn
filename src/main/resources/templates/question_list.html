@@ -10,7 +10,8 @@
         <thead class="table-dark">
           <tr>
             <th>번호</th>
-            <th>제목</th>
+            <th style="width: 50%">제목</th>
+            <th>글쓴이</th>
             <th>작성일시</th>
           </tr>
         </thead>
@@ -23,9 +24,10 @@
             <td>
               <!-- 제목 -->
               <a
-                th:href="@{|/question/detail/${question.id}?page=${paging.number}|}"
+                th:href="@{|/question/detail/${question.id}|}"
                 th:text="${question.subject}"
               ></a>
+
               <!-- 댓글개수 -->
               <span th:if="${#lists.size(question.answerList) > 0}">
                 <span class="text-danger small ms-2"
@@ -34,6 +36,14 @@
                 >
               </span>
             </td>
+            <!-- 글쓴이 -->
+            <td>
+              <span
+                th:if="${question.author != null}"
+                th:text="${question.author.username}"
+              ></span>
+            </td>
+
             <!-- 작성일시 -->
             <td
               th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"
@@ -54,7 +64,7 @@
           </li>
           <li
             th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
-            th:if="${page >= paging.number-5 and page <= paging.number+5}"
+            th:if="${page >= paging.number-3 and page <= paging.number+3}"
             th:classappend="${page == paging.number} ? 'active'"
             class="page-item"
           >

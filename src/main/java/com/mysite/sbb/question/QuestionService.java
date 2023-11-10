@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.mysite.sbb.user.SiteUser;
+
 @Service
 public class QuestionService {
 
@@ -32,13 +34,21 @@ public class QuestionService {
 	}
 
 	//질문등록
-	public void create(String subject, String content) {
+	public void create(String subject, String content, SiteUser siteUser) {
 		Question question = new Question();
 		question.setSubject(subject);
 		question.setContent(content);
 		question.setCreateDate(LocalDateTime.now());
+		question.setAuthor(siteUser);
 		this.qRepo.save(question);
 	}
 	
+	//질문수정
+	public void modify(Question question,String subject,String content) {
+		question.setSubject(subject);
+		question.setContent(content);
+		question.setModifyDate(LocalDateTime.now());
+		this.qRepo.save(question);
+	}
 	
 }
