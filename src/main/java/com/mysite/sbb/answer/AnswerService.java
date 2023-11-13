@@ -1,10 +1,13 @@
 package com.mysite.sbb.answer;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mysite.sbb.question.DataNotFoundException;
 import com.mysite.sbb.question.Question;
 import com.mysite.sbb.user.SiteUser;
 
@@ -23,4 +26,45 @@ public class AnswerService {
 		answer.setAuthor(author);
 		this.aRepo.save(answer);
 	}
+	
+	//답변할 정보조회
+	public Answer getAnswer(int id) {
+		Optional<Answer> answer = aRepo.findById(id);
+		if(answer.isPresent()) {
+			return answer.get();
+		} else {
+			throw new DataNotFoundException("answer not found");
+		}
+	}
+	
+	//답변수정
+	public void modify(Answer answer, String content) {
+		answer.setContent(content);
+		answer.setModifyDate(LocalDateTime.now());
+		this.aRepo.save(answer);
+	}
+	
+	//답변삭제
+	public void delete(Answer answer) {
+		this.aRepo.delete(answer);
+	}
+	
+	//추천
+	public void vote(Answer answer, SiteUser siteUser) {
+		Set<SiteUser> list = answer.getVoter();
+		boolean removeVote = false; //추천했는지 확인 -> 안했으면 false
+		for(SiteUser user : list) {
+			if(user.getUsername().equals(siteUser.getUsername())) {
+				list.remove(user); //제거
+				removeVote = true; //이미 추천됨
+			}
+		}
+		if(!removeVote) {
+			list.add(siteUser); //추천 안되어있으면 추가
+		}
+		
+		this.aRepo.save(answer); //추천인 업데이트
+	}
+	
+	
 }

@@ -76,7 +76,7 @@ public class QuestionController {
 	@GetMapping("/modify/{id}")
 	public String questionModify(QuestionForm questionForm,
 			                     @PathVariable("id") int id,
-			                     Principal principal) {
+			                     Principal principal,Model model) {
 		
 		//질문가져오기
 		Question question = this.qService.getQuestion(id);
@@ -87,7 +87,7 @@ public class QuestionController {
 		//수정전 정보가져오기
 		questionForm.setSubject(question.getSubject());
 		questionForm.setContent(question.getContent());
-		
+		model.addAttribute("modify", true); //제목 조건문
 		return "question_form";
 	}
 	
@@ -112,5 +112,34 @@ public class QuestionController {
 		this.qService.modify(question, questionForm.getSubject(), questionForm.getContent());
 		return String.format("redirect:/question/detail/%s", id);
 	}
+	
+	//질문삭제
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/delete/{id}")
+	public String questionDelete(Principal principal, @PathVariable("id") int id) {
+		Question question = this.qService.getQuestion(id);
+		//한번 더 확인
+        if (!question.getAuthor().getUsername().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
+        }
+
+        //삭제
+        this.qService.delete(question);
+        
+        return "redirect:/";
+
+	}
+	
+	//질문 추천
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/vote/{id}")
+    public String questionVote(Principal principal, @PathVariable("id") Integer id) {
+        Question question = this.qService.getQuestion(id);
+        SiteUser siteUser = this.uService.getUser(principal.getName());
+        this.qService.vote(question, siteUser);
+        //return String.format("redirect:/question/detail/%s", id);
+        return "redirect:/question/detail/" + id;
+    }
+	
 	
 }

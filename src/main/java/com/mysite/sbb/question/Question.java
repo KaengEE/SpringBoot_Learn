@@ -2,6 +2,7 @@ package com.mysite.sbb.question;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -42,4 +44,8 @@ public class Question {
 	private SiteUser author; //작성자
 	
 	private LocalDateTime modifyDate; //수정날짜
+	
+	//질문과 추천인(유저) 다대다 관계 n:n관계 한명의 유저는 1번 추천 (중복X -Set)
+	@ManyToMany
+	private Set<SiteUser> voter; //추천인
 }
