@@ -10,6 +10,7 @@
         <thead class="table-dark">
           <tr>
             <th>번호</th>
+            <th style="width: 5%">&nbsp;</th>
             <th style="width: 50%">제목</th>
             <th>글쓴이</th>
             <th>작성일시</th>
@@ -22,9 +23,16 @@
               th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"
             ></td>
             <td>
+              <span
+                th:if="${#lists.size(question.voter)>=3}"
+                class="badge bg-light text-danger p-2 text-start"
+                >추천!</span
+              >
+            </td>
+            <td>
               <!-- 제목 -->
               <a
-                th:href="@{|/question/detail/${question.id}|}"
+                th:href="@{|/question/detail/${question.id}?page=${paging.number}|}"
                 th:text="${question.subject}"
               ></a>
 

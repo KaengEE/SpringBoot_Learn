@@ -43,7 +43,7 @@
             <!-- 추천버튼 -->
             <a
               onclick="return confirm('추천하시겠습니까?')"
-              th:href="@{|/question/vote/${question.id}|}"
+              th:href="@{|/question/vote/${question.id}/${paging.number}|}"
               class="recommend btn btn-sm btn-outline-secondary"
             >
               추천
@@ -52,15 +52,15 @@
                 th:text="${#lists.size(question.voter)}"
               ></span>
             </a>
-
             <!-- 수정버튼 -->
             <a
-              th:href="@{|/question/modify/${question.id}|}"
+              th:href="@{|/question/modify/${question.id}/${paging.number}|}"
               class="btn btn-sm btn-outline-secondary"
               sec:authorize="isAuthenticated()"
               th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
               th:text="수정"
             ></a>
+
             <!-- 삭제버튼 -->
             <a
               onclick="return confirm('정말로 삭제할까요?')"
@@ -116,7 +116,7 @@
             <!-- 추천버튼 -->
             <a
               onclick="return confirm('추천하시겠습니까?')"
-              th:href="@{|/answer/vote/${answer.id}|}"
+              th:href="@{|/answer/vote/${answer.id}/${paging.number}|}"
               class="recommend btn btn-sm btn-outline-secondary"
             >
               추천
@@ -125,9 +125,10 @@
                 th:text="${#lists.size(answer.voter)}"
               ></span>
             </a>
+
             <!-- 수정버튼 -->
             <a
-              th:href="@{|/answer/modify/${answer.id}|}"
+              th:href="@{|/answer/modify/${answer.id}/${paging.number}|}"
               class="btn btn-sm btn-outline-secondary"
               sec:authorize="isAuthenticated()"
               th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
@@ -136,7 +137,7 @@
             <!-- 삭제버튼 -->
             <a
               onclick="return confirm('정말로 삭제할까요?')"
-              th:href="@{|/answer/delete/${answer.id}|}"
+              th:href="@{|/answer/delete/${answer.id}/${paging.number}|}"
               class="btn btn-sm btn-outline-danger"
               sec:authorize="isAuthenticated()"
               th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
@@ -148,7 +149,7 @@
       <!-- 답변 반복 끝  -->
       <!-- 답변 작성 -->
       <form
-        th:action="@{|/answer/create/${question.id}|}"
+        th:action="@{|/answer/create/${question.id}/${paging.number}|}"
         th:object="${answerForm}"
         method="post"
         class="my-3"
@@ -168,7 +169,14 @@
           rows="10"
           class="form-control"
         ></textarea>
-        <input type="submit" value="답변등록" class="btn btn-primary my-2" />
+        <div>
+          <a
+            th:href="@{/question/list?page=__${paging.number}__}"
+            class="btn btn-secondary my-2"
+            >목록으로</a
+          >
+          <input type="submit" value="답변등록" class="btn btn-primary my-2" />
+        </div>
       </form>
     </div>
   </body>

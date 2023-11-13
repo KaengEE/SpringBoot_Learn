@@ -35,8 +35,8 @@ public class AnswerController {
 	private UserService uService;
 	
 	@PreAuthorize("isAuthenticated()")
-	@PostMapping("/create/{id}")
-	public String createAnswer(Model model,@PathVariable("id") int id,
+	@PostMapping("/create/{id}/{page}")
+	public String createAnswer(Model model,@PathVariable("id") int id, @PathVariable("page") int page,
 			                   @Valid AnswerForm answerForm, BindingResult result,
 			                   Principal principal) {
 		//질문가져오기
@@ -52,14 +52,14 @@ public class AnswerController {
 		//답변저장
 		this.aService.creat(question, answerForm.getContent(), siteUser);
 		
-		return String.format("redirect:/question/detail/%s", id);
+		return String.format("redirect:/question/detail/%s?page=%s", id, page);
 	}
 
 	
 	//수정전
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/modify/{id}")
-	public String modifyAnswer(AnswerForm answerForm, @PathVariable("id") int id,
+	@GetMapping("/modify/{id}/{page}")
+	public String modifyAnswer(AnswerForm answerForm, @PathVariable("id") int id,@PathVariable("page") int page,
 							   Principal principal) {
 		Answer answer = this.aService.getAnswer(id);
 		//확인
@@ -73,9 +73,9 @@ public class AnswerController {
 	
 	//수정
 	@PreAuthorize("isAuthenticated()")
-	@PostMapping("/modify/{id}")
+	@PostMapping("/modify/{id}/{page}")
 	public String modifyAnswer(@Valid AnswerForm answerForm, BindingResult result,
-								@PathVariable("id") int id,  Principal principal) {
+								@PathVariable("id") int id, @PathVariable("page") int page,  Principal principal) {
 		if(result.hasErrors()) {
 			return "answer_form";
 		}
@@ -89,13 +89,13 @@ public class AnswerController {
 		
 		//수정답변저장
 		this.aService.modify(answer, answerForm.getContent());
-		return String.format("redirect:/question/detail/%s", answer.getQuestion().getId()); //질문의 id가져와야함
+		return String.format("redirect:/question/detail/%s?page=%s", answer.getQuestion().getId(), page); //질문의 id가져와야함
 	}
 	
 	//삭제
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/delete/{id}")
-	public String answerDelete(Principal principal, @PathVariable("id") int id) {
+	@GetMapping("/delete/{id}/{page}")
+	public String answerDelete(Principal principal, @PathVariable("id") int id, @PathVariable("page") int page) {
 		//답변가져오기
 		Answer answer = this.aService.getAnswer(id);
 		//한번더 확인
@@ -105,17 +105,19 @@ public class AnswerController {
 		
 		//삭제
 		this.aService.delete(answer);
-		return String.format("redirect:/question/detail/%s", answer.getQuestion().getId()); //질문의 id가져와야함
+		return String.format("redirect:/question/detail/%s?page=%s", answer.getQuestion().getId(),page); //질문의 id가져와야함
 	}
 	
 	//답변추천
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/vote/{id}")
-    public String answerVote(Principal principal, @PathVariable("id") Integer id) {
+    @GetMapping("/vote/{id}/{page}")
+    public String answerVote(Principal principal, @PathVariable("id") Integer id, @PathVariable("page") int page) {
         Answer answer = this.aService.getAnswer(id);
         SiteUser siteUser = this.uService.getUser(principal.getName());
+//        boolean removeVote = this.aService.vote(answer, siteUser);
+//        model.addAttribute("removeVote", removeVote);
         this.aService.vote(answer, siteUser);
-        return "redirect:/question/detail/" + answer.getQuestion().getId();
+        return "redirect:/question/detail/" + answer.getQuestion().getId() + "?page=" + page;
     }
 	
 }

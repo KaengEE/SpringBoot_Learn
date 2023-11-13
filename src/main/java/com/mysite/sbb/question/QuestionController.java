@@ -42,9 +42,12 @@ public class QuestionController {
 	
 	@GetMapping("/detail/{id}")
 	public String detail(Model model, @PathVariable("id") int id,
-			AnswerForm answerForm) {
+			AnswerForm answerForm,@RequestParam("page") int page) {
 		Question question = qService.getQuestion(id);
+		Page<Question> paging = qService.getList(page);
+		model.addAttribute("paging", paging);
 		model.addAttribute("question", question);
+
 		return "question_detail";
 	}
 	
@@ -73,9 +76,9 @@ public class QuestionController {
 	
 	//수정페이지
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/modify/{id}")
+	@GetMapping("/modify/{id}/{page}")
 	public String questionModify(QuestionForm questionForm,
-			                     @PathVariable("id") int id,
+			                     @PathVariable("id") int id,@PathVariable("page") int page,
 			                     Principal principal,Model model) {
 		
 		//질문가져오기
@@ -94,9 +97,9 @@ public class QuestionController {
 	
 	//질문수정
 	@PreAuthorize("isAuthenticated()")
-	@PostMapping("/modify/{id}")
+	@PostMapping("/modify/{id}/{page}")
 	public String questionModify(@Valid QuestionForm questionForm, BindingResult result,
-			                     @PathVariable("id") int id,
+			                     @PathVariable("id") int id,@PathVariable("page") int page,
 			                     Principal principal) {
 		
 		if(result.hasErrors()) {
@@ -110,7 +113,7 @@ public class QuestionController {
 		}
 				
 		this.qService.modify(question, questionForm.getSubject(), questionForm.getContent());
-		return String.format("redirect:/question/detail/%s", id);
+		return String.format("redirect:/question/detail/%s?page=%s", id, page);
 	}
 	
 	//질문삭제
@@ -132,14 +135,16 @@ public class QuestionController {
 	
 	//질문 추천
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/vote/{id}")
-    public String questionVote(Principal principal, @PathVariable("id") Integer id) {
+    @GetMapping("/vote/{id}/{page}")
+    public String questionVote(Principal principal, @PathVariable("id") Integer id,Model model,@PathVariable("page") int page) {
         Question question = this.qService.getQuestion(id);
         SiteUser siteUser = this.uService.getUser(principal.getName());
+        
         this.qService.vote(question, siteUser);
         //return String.format("redirect:/question/detail/%s", id);
-        return "redirect:/question/detail/" + id;
+        return "redirect:/question/detail/" + id +"?page=" + page;
     }
 	
+  
 	
 }
